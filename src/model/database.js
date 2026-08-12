@@ -17,3 +17,13 @@ export function nextId(collectionName) {
   counters[collectionName] += 1;
   return id;
 }
+
+export function resetDatabase() {
+  Object.keys(database).forEach((collectionName) => {
+    database[collectionName] = [];
+  });
+
+  Object.keys(counters).forEach((collectionName) => {
+    counters[collectionName] = 1;
+  });
+}
