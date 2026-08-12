@@ -53,6 +53,9 @@ jobs:
       - name: Setup k6
         uses: grafana/setup-k6-action@v1
 
+      - name: Prepare performance report directory
+        run: mkdir -p test/performance/reports
+
       - name: Start API
         run: |
           npm start > api.log 2>&1 &
@@ -66,6 +69,9 @@ jobs:
           exit 1
 
       - name: Run k6 performance tests
+        env:
+          K6_WEB_DASHBOARD: "true"
+          K6_WEB_DASHBOARD_EXPORT: test/performance/reports/api-performance-dashboard.html
         run: npm run test:performance:report
 
       - name: Upload performance report
