@@ -7,7 +7,10 @@
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
     "test": "mocha \"test/api/controllers/**/*.test.js\"",
-    "test:report": "mocha \"test/api/controllers/**/*.test.js\" --reporter mochawesome --reporter-options reportDir=mochawesome-report,reportFilename=api-tests,html=true,json=true,overwrite=true"
+    "test:report": "mocha \"test/api/controllers/**/*.test.js\" --reporter mochawesome --reporter-options reportDir=mochawesome-report,reportFilename=api-tests,html=true,json=true,overwrite=true",
+    "test:performance": "k6 run test/performance/api.performance.test.js",
+    "test:performance:report": "k6 run --summary-export test/performance/reports/api-performance-summary.json test/performance/api.performance.test.js",
+    "test:performance:dashboard": "set \"K6_WEB_DASHBOARD=true\" && set \"K6_WEB_DASHBOARD_EXPORT=test/performance/reports/api-performance-dashboard.html\" && k6 run --summary-export test/performance/reports/api-performance-summary.json test/performance/api.performance.test.js"
   },
   "repository": {
     "type": "git",
