@@ -10,7 +10,10 @@
     "test:report": "mocha \"test/api/controllers/**/*.test.js\" --reporter mochawesome --reporter-options reportDir=mochawesome-report,reportFilename=api-tests,html=true,json=true,overwrite=true",
     "test:performance": "k6 run test/performance/api.performance.test.js",
     "test:performance:report": "k6 run --summary-export test/performance/reports/api-performance-summary.json test/performance/api.performance.test.js",
-    "test:performance:dashboard": "set \"K6_WEB_DASHBOARD=true\" && set \"K6_WEB_DASHBOARD_EXPORT=test/performance/reports/api-performance-dashboard.html\" && k6 run --summary-export test/performance/reports/api-performance-summary.json test/performance/api.performance.test.js"
+    "test:performance:dashboard": "set \"K6_WEB_DASHBOARD=true\" && set \"K6_WEB_DASHBOARD_EXPORT=test/performance/reports/api-performance-dashboard.html\" && k6 run --summary-export test/performance/reports/api-performance-summary.json test/performance/api.performance.test.js",
+    "test:web": "cypress run --browser electron",
+    "test:web:open": "cypress open",
+    "test:web:report": "node scripts/prepare-web-report.mjs && cypress run --browser electron --reporter mochawesome --reporter-options \"reportDir=cypress/results,reportFilename=web-tests,overwrite=false,html=false,json=true\" && npx mochawesome-merge \"cypress/results/*.json\" -o cypress/results/web-tests-merged.json && npx marge cypress/results/web-tests-merged.json --reportDir mochawesome-report/web --reportFilename index --inline true"
   },
   "repository": {
     "type": "git",
@@ -32,7 +35,10 @@
   },
   "devDependencies": {
     "chai": "^6.2.2",
+    "cypress": "^16.3.0",
     "mochawesome": "^8.0.1",
+    "mochawesome-merge": "^5.1.1",
+    "mochawesome-report-generator": "^6.3.2",
     "supertest": "^7.2.2"
   }
 }

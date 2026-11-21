@@ -16,7 +16,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - name: Install dependencies
@@ -29,8 +29,59 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: mochawesome-report
+          name: api-mochawesome-report
           path: mochawesome-report/
+          if-no-files-found: ignore
+
+  web-tests:
+    name: Web tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify Cypress
+        run: npx cypress verify
+
+      - name: Start API
+        run: |
+          npm start > api.log 2>&1 &
+          for i in {1..30}; do
+            if curl --fail --silent http://localhost:3000/api/health; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat api.log
+          exit 1
+
+      - name: Run web tests and generate report
+        run: npm run test:web:report
+
+      - name: Upload web test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-web-mochawesome-report
+          path: mochawesome-report/web/
+          if-no-files-found: ignore
+
+      - name: Upload web test API log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-tests-api-log
+          path: api.log
           if-no-files-found: ignore
 
   performance-tests:
@@ -44,7 +95,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - name: Install dependencies

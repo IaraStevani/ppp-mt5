@@ -2,3 +2,6 @@ node_modules/
 mochawesome-report
 reports
 prompt.md
+cypress/results/
+cypress/screenshots/
+cypress/videos/

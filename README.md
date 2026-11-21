@@ -11,6 +11,7 @@ O contrato da API está documentado em `resources/swagger.json` e é exposto pel
 * JWT para autenticação Bearer
 * Swagger UI para documentação da API
 * Mocha, Chai e Supertest para testes automatizados de API
+* Cypress para testes end-to-end da aplicação web
 * Mochawesome para relatório HTML dos testes
 * k6 para testes de performance
 * GitHub Actions para CI
@@ -117,6 +118,13 @@ test/
     api.performance.test.js     Teste de performance com k6
     fixtures/                   Massa usada no fluxo k6
     helpers/                    Helper de autenticação para k6
+  web/
+    auth/login.cy.js            Testes web de autenticação
+    equipment/equipment.cy.js   Testes web de equipamentos
+    rentals/rentals.cy.js       Testes web de locações e devoluções
+    support/                    Comandos reutilizáveis do Cypress
+
+cypress.config.js               Configuração do Cypress
 
 .github/
   workflows/
@@ -167,6 +175,48 @@ Relatório gerado em:
 
 ```text
 mochawesome-report/
+```
+
+## Testes Automatizados Web
+
+A aplicação web é validada com Cypress por meio de interações reais no navegador. Os testes usam seletores exclusivos `data-cy`, evitando dependência de texto, classes CSS ou posição dos elementos na tela.
+
+Cobertura atual:
+
+| Arquivo | Escopo |
+|---|---|
+| `test/web/auth/login.cy.js` | Login, cadastro, logout, campos obrigatórios, e-mail inválido, senha curta, duplicidade e credenciais inválidas |
+| `test/web/equipment/equipment.cy.js` | Listagem, busca, obrigatoriedade, cadastro e valor diário inválido (zero, negativo ou não numérico) |
+| `test/web/rentals/rentals.cy.js` | Listagem, datas obrigatórias, equipamento indisponível, locação, devolução, campos obrigatórios e data de devolução inválida |
+
+Pré-requisito: a API deve estar em execução em `http://localhost:3000`.
+
+```bash
+npm start
+```
+
+Execute todos os testes web em modo headless:
+
+```bash
+npm run test:web
+```
+
+Para acompanhar os testes pelo aplicativo do Cypress:
+
+```bash
+npm run test:web:open
+```
+
+Para gerar o relatório HTML Mochawesome consolidado:
+
+```bash
+npm run test:web:report
+```
+
+O relatório web é separado do relatório de API e fica em:
+
+```text
+mochawesome-report/web/index.html
 ```
 
 ## Testes VADER
@@ -241,11 +291,14 @@ Jobs configurados:
 | Job | Objetivo |
 |---|---|
 | `api-tests` | Instala dependências, executa `npm run test:report` e publica o relatório Mochawesome |
+| `web-tests` | Inicia a API, executa `npm run test:web:report` e publica o relatório Cypress/Mochawesome |
 | `performance-tests` | Instala dependências, configura k6, inicia a API, executa performance e publica relatórios |
 
 Artefatos publicados:
 
-* `mochawesome-report`
+* `api-mochawesome-report`
+* `cypress-web-mochawesome-report`
+* `web-tests-api-log`
 * `k6-performance-report`
 * `api-log`
 
@@ -285,6 +338,9 @@ Artefatos publicados:
 | Desenvolvimento | `npm run dev` |
 | Testes de API | `npm test` |
 | Testes com relatório | `npm run test:report` |
+| Testes Web com Cypress | `npm run test:web` |
+| Testes Web interativos | `npm run test:web:open` |
+| Testes Web com relatório | `npm run test:web:report` |
 | Performance | `npm run test:performance` |
 | Performance com resumo | `npm run test:performance:report` |
 | Performance com dashboard | `npm run test:performance:dashboard` |

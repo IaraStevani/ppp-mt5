@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="LocaPro: gestão de equipamentos, locações e devoluções." />
+    <title>LocaPro | Gestão de locações</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b5f53'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Arial' font-size='21' font-weight='700' fill='%23d5f26c'%3EL%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./auth.css" />
+  </head>
+  <body>
+    <section id="auth-screen" class="auth-screen" aria-labelledby="auth-title">
+      <div class="auth-brand"><span class="brand-mark">L</span><strong>Loca<span>Pro</span></strong></div>
+      <div class="auth-layout">
+        <div class="auth-copy"><span class="eyebrow">GESTÃO DE OPERAÇÕES</span><h1>Todo o seu inventário.<br><em>Em um só lugar.</em></h1><p>Entre para acompanhar equipamentos, locações e devoluções com clareza em cada etapa.</p><div class="auth-points"><p><i>✓</i> Controle de equipamentos</p><p><i>✓</i> Locações e devoluções</p><p><i>✓</i> Autenticação segura via JWT</p></div></div>
+        <div class="auth-card"><span class="eyebrow" id="auth-kicker">ACESSO À PLATAFORMA</span><h2 id="auth-title">Boas-vindas de volta</h2><p id="auth-subtitle">Entre com seus dados para continuar.</p><form id="login-form" class="auth-form"><label>E-mail<input name="email" type="email" autocomplete="email" required placeholder="voce@exemplo.com" /></label><label>Senha<input name="password" type="password" autocomplete="current-password" required placeholder="••••••••" /></label><button class="primary" type="submit">Entrar na plataforma</button></form><form id="register-form" class="auth-form hidden"><label>Nome<input name="name" autocomplete="name" required placeholder="Seu nome" /></label><label>E-mail<input name="email" type="email" autocomplete="email" required placeholder="voce@exemplo.com" /></label><label>Senha<input name="password" type="password" autocomplete="new-password" required minlength="6" placeholder="Mínimo de 6 caracteres" /></label><button class="primary" type="submit">Criar conta e entrar</button></form><p class="auth-switch" id="auth-switch">Ainda não possui uma conta? <button type="button" id="show-register">Criar conta</button></p><p id="auth-error" class="auth-error" role="alert"></p></div>
+      </div>
+    </section>
+    <aside class="sidebar">
+      <a class="brand" href="#dashboard"><span class="brand-mark">L</span><span>Loca<span>Pro</span></span></a>
+      <nav aria-label="Navegação principal">
+        <button class="nav-item active" data-view="dashboard"><span>◈</span> Visão geral</button>
+        <button class="nav-item" data-view="equipment"><span>▣</span> Equipamentos</button>
+        <button class="nav-item" data-view="rentals"><span>◫</span> Locações</button>
+        <button class="nav-item" data-view="returns"><span>↙</span> Devoluções</button>
+      </nav>
+      <div class="portfolio-note"><span>PROJETO DE PORTFÓLIO</span><p>API REST + testes automatizados</p><a href="/api-docs">Ver documentação</a></div>
+      <div class="profile"><div class="avatar">IS</div><div><strong>Usuário demo</strong><small>Sessão ativa</small></div><button id="logout" aria-label="Sair">↗</button></div>
+    </aside>
+    <main>
+      <header><div><p class="eyebrow" id="date-label">OPERAÇÃO · HOJE</p><h1 id="page-title">Visão geral</h1></div><div class="header-actions"><span class="api-status"><i></i> API preparada</span><button class="primary" id="quick-action">+ Novo equipamento</button></div></header>
+      <section id="dashboard" class="view active">
+        <div class="intro"><div><h2>Controle completo, sem atrito.</h2><p>Gerencie os equipamentos da obra, acompanhe contratos ativos e registre devoluções em um único fluxo.</p></div><button class="outline" data-view-target="equipment">Explorar inventário</button></div>
+        <div class="metrics"><article><span>Equipamentos</span><strong id="total-equipment">0</strong><small>no inventário</small></article><article><span>Disponíveis</span><strong id="available-equipment">0</strong><small>prontos para locação</small></article><article><span>Em locação</span><strong id="active-rentals">0</strong><small>contratos ativos</small></article><article><span>Taxa de ocupação</span><strong id="occupancy">0%</strong><small>do parque atual</small></article></div>
+        <div class="dashboard-grid"><section class="panel"><div class="panel-heading"><div><span class="eyebrow">ATIVIDADE RECENTE</span><h3>Últimas movimentações</h3></div><button class="link-button" data-view-target="rentals">Ver todas</button></div><div id="activity-list" class="activity-list"></div></section><section class="panel availability"><div class="panel-heading"><div><span class="eyebrow">INVENTÁRIO</span><h3>Disponibilidade</h3></div></div><div class="ring"><div><strong id="ring-value">0%</strong><span>disponível</span></div></div><div class="legend"><p><i class="dot green"></i> Disponíveis <strong id="available-legend">0</strong></p><p><i class="dot orange"></i> Em locação <strong id="rented-legend">0</strong></p></div></section></div>
+      </section>
+      <section id="equipment" class="view"><div class="toolbar"><label class="search">⌕ <input id="equipment-search" placeholder="Buscar equipamento" /></label><button class="primary" id="add-equipment">+ Cadastrar equipamento</button></div><div id="equipment-grid" class="equipment-grid"></div></section>
+      <section id="rentals" class="view"><div class="section-intro"><div><span class="eyebrow">ACOMPANHAMENTO</span><h2>Locações</h2></div><button class="primary" id="new-rental">+ Nova locação</button></div><div class="panel table-panel"><table><thead><tr><th>Equipamento</th><th>Início</th><th>Devolução prevista</th><th>Status</th><th></th></tr></thead><tbody id="rentals-table"></tbody></table></div></section>
+      <section id="returns" class="view"><div class="section-intro"><div><span class="eyebrow">HISTÓRICO</span><h2>Devoluções</h2></div></div><div id="returns-list" class="return-list"></div></section>
+    </main>
+    <dialog id="modal"><form method="dialog" id="modal-form"><div class="modal-head"><div><span class="eyebrow">NOVO REGISTRO</span><h2 id="modal-title">Cadastrar equipamento</h2></div><button aria-label="Fechar" value="cancel">×</button></div><div id="modal-fields" class="form-fields"></div><div class="modal-actions"><button class="outline" value="cancel">Cancelar</button><button class="primary" id="modal-submit" value="default">Salvar</button></div></form></dialog>
+    <div id="toast" role="status"></div><script src="./app.js"></script><script src="./auth.js"></script><script src="./web-test-hooks.js"></script><script src="./web-validation.js"></script>
+  </body>
+</html>
